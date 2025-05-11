@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservicea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservicea
+  template:
+    metadata:
+      labels:
+        app: microservicea
+    spec:
+      containers:
+      - name: microservicea
+        image: microservicea:latest
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://*:80"
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservicea
+spec:
+  selector:
+    app: microservicea
+  ports:
+    - protocol: TCP
+      port: 7016
+      targetPort: 80
+  type: NodePort

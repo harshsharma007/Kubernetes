@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microserviceb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microserviceb
+  template:
+    metadata:
+      labels:
+        app: microserviceb
+    spec:
+      containers:
+      - name: microserviceb
+        image: microserviceb:latest
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: "http://*:82"
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 82
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microserviceb
+spec:
+  selector:
+    app: microserviceb
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 82
